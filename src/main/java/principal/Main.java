@@ -38,6 +38,6 @@ public class Main {
             System.out.println("Kilómetros recorridos: " + vehiculo.getKilometrosRecorridos());
             System.out.println();
         }*/
-        System.out.println("jojojojojojojoj?");
+
     }
 }
