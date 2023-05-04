@@ -7,6 +7,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static Validadadores.CamposCompletos.camposCompletos;
+import static Validadadores.FormatoCorreoValido.formatoCorreoValido;
+import static Validadadores.FormatoRutValido.formatoRutValido;
+import static Validadadores.FormatoTelefonoValido.formatoTelefonoValido;
+
 public class VentanaAgregarCliente extends JFrame implements ActionListener {
 
     private JTextField txtNombre;
@@ -17,30 +22,31 @@ public class VentanaAgregarCliente extends JFrame implements ActionListener {
     private JButton btnAgregar;
     private JButton btnCancelar;
     private Automotora automotora;
-   /* public VentanaAgregarCliente(Automotora automotora){
-        super("Agregar Cliente");
-        this.automotora= automotora;
-
-    }*/
 
     public VentanaAgregarCliente(Automotora automotora) {
         super("Agregar Cliente");
-        this.automotora= automotora;
+        this.automotora = automotora;
+        crearCamposDeTexto();
+        crearBotones();
+        agregarComponentes();
+        configurarVentana();
+        agregarListeners();
+    }
 
-
-
-        // Crear campos de texto
+    private void crearCamposDeTexto() {
         txtNombre = new JTextField();
         txtRut = new JTextField();
         txtDireccion = new JTextField();
         txtTelefono = new JTextField();
         txtCorreo = new JTextField();
+    }
 
-        // Crear botones
+    private void crearBotones() {
         btnAgregar = new JButton("Agregar");
         btnCancelar = new JButton("Cancelar");
+    }
 
-        // Agregar los componentes a la ventana
+    private void agregarComponentes() {
         JPanel panel = new JPanel(new GridLayout(6, 2, 5, 5));
         panel.add(new JLabel("Nombre del cliente:"));
         panel.add(txtNombre);
@@ -55,14 +61,16 @@ public class VentanaAgregarCliente extends JFrame implements ActionListener {
         panel.add(btnAgregar);
         panel.add(btnCancelar);
         add(panel);
+    }
 
-        // Configurar la ventana
+    private void configurarVentana() {
         setSize(400, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
+    }
 
-        // Configurar los botones
+    private void agregarListeners() {
         btnAgregar.addActionListener(this);
         btnCancelar.addActionListener(this);
     }
@@ -75,54 +83,56 @@ public class VentanaAgregarCliente extends JFrame implements ActionListener {
         }
     }
 
+    // Este método se utiliza para agregar un nuevo cliente a la automotora.
     private void agregarCliente() {
+        // Se obtienen los valores ingresados en los campos de texto correspondientes.
         String nombre = txtNombre.getText();
         String rut = txtRut.getText();
         String direccion = txtDireccion.getText();
         String telefono = txtTelefono.getText();
         String correo = txtCorreo.getText();
 
-        // Validar que los campos estén completos
-        if (nombre.isEmpty() || rut.isEmpty() || direccion.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
+        // Se verifica que todos los campos obligatorios estén completos utilizando el método "camposCompletos()".
+        // Si algún campo está vacío, se muestra un mensaje de error y se sale del método.
+
+        if (!camposCompletos(txtNombre.getText(), txtRut.getText(),txtDireccion.getText(),txtTelefono.getText(),txtCorreo.getText())) {
             JOptionPane.showMessageDialog(this, "Por favor complete todos los campos");
             return;
         }
 
-        // Validar que el RUT tenga el formato correcto
-        if (!rut.matches("\\d{7,8}-[\\dkK]")) {
+        // Se verifica que el campo de texto "txtRut" tenga un formato de RUT válido utilizando el método "formatoRutValido()".
+        // Si el formato no es válido, se muestra un mensaje de error y se sale del método.
+        if (!formatoRutValido(txtRut.getText())) {
             JOptionPane.showMessageDialog(this, "El RUT debe tener el formato xxxxxxxx-x");
             return;
         }
 
-        // Validar que el teléfono tenga el formato correcto
-        if (!telefono.matches("\\+56 9 \\d{8}")) {
+        // Se verifica que el campo de texto "txtTelefono" tenga un formato de número de teléfono móvil chileno válido utilizando el método "formatoTelefonoValido()".
+        // Si el formato no es válido, se muestra un mensaje de error y se sale del método.
+        if (!formatoTelefonoValido(txtTelefono.getText())) {
             JOptionPane.showMessageDialog(this, "El teléfono debe tener el formato +56 9 xxxxxxxx");
             return;
         }
 
-        // Validar que el correo tenga el formato correcto
-        if (!correo.matches("\\w+@\\w+\\.\\w+")) {
+        // Se verifica que el campo de texto "txtCorreo" tenga un formato de dirección de correo electrónico válido utilizando el método "formatoCorreoValido()".
+        // Si el formato no es válido, se muestra un mensaje de error y se sale del método.
+        if (!formatoCorreoValido(txtCorreo.getText())) {
             JOptionPane.showMessageDialog(this, "El correo electrónico debe tener el formato usuario@dominio.com");
             return;
         }
 
-        // Agregar el cliente a la base de datos
-       automotora.añadirCliente( nombre, rut, direccion, telefono, correo);
-        //String nombre, String rut, String direccion, String numeroTel, String correo
-        // Aquí se podría llamar a un método de una clase DAO para agregar el cliente a la base de datos
-
+        // Se añade el cliente a la automotora utilizando el método "añadirCliente()" y se muestra un mensaje de éxito.
+        automotora.añadirCliente(nombre, rut, direccion, telefono, correo);
         JOptionPane.showMessageDialog(this, "Cliente agregado correctamente");
-        // Si es así, crea una nueva instancia de la clase VentanaMenuBienvenida pasándole como argumento un objeto "automotora"
+
+        // Se crea una nueva ventana de bienvenida y se cierra la ventana actual.
         VentanaBienvenida ventanaMenuBienvenida = new VentanaBienvenida(automotora);
         dispose();
     }
 
+    // Este método se utiliza para cerrar la ventana.
     private void cancelar() {
         dispose();
+
     }
-
-    /*public static void main(String[] args) {
-        new VentanaAgregarCliente(new Automotora());
-    }*/
-
 }

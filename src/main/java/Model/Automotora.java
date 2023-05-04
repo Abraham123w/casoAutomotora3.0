@@ -134,4 +134,15 @@ public class Automotora {
 		return vehiculosEncontrados;
 	}
 
+
+
+
+
+
+
+		public void agregarVehiculoRecibiendoObjetoTipoVehiculo(Vehiculo vehiculo) {
+			vehiculos.add(vehiculo);
+		}
+
+
 }
